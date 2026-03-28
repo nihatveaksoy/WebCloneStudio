@@ -60,6 +60,9 @@ export function SuggestionsTab({
 }) {
   const [isStarting, setIsStarting] = useState(false)
   const [activeFilter, setActiveFilter] = useState<SuggestionCategory | null>(null)
+  const [appliedIds, setAppliedIds] = useState<Set<string>>(() => {
+    return new Set(project.analysis.suggestions.filter((s) => s.applied).map((s) => s.id))
+  })
   const { analysis } = project
 
   async function handleAnalyze() {
@@ -83,9 +86,15 @@ export function SuggestionsTab({
   }
 
   function handleToggleApply(id: string) {
-    // Toggle is handled locally for UI; actual persistence happens in EnhancedTab
-    // This is a no-op for now since suggestions are read from server state
-    void id
+    setAppliedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
   }
 
   if (analysis.status === "idle") {
@@ -137,10 +146,14 @@ export function SuggestionsTab({
     )
   }
 
-  const suggestions = analysis.suggestions
+  const suggestions = analysis.suggestions.map((s) => ({
+    ...s,
+    applied: appliedIds.has(s.id),
+  }))
   const filtered = activeFilter
     ? suggestions.filter((s) => s.category === activeFilter)
     : suggestions
+  const selectedCount = appliedIds.size
 
   const highCount = suggestions.filter((s) => s.priority === "high").length
   const mediumCount = suggestions.filter((s) => s.priority === "medium").length
@@ -206,6 +219,20 @@ export function SuggestionsTab({
         <p className="py-8 text-center text-sm text-muted-foreground">
           No suggestions found for this category.
         </p>
+      )}
+
+      {/* Selected count + hint */}
+      {selectedCount > 0 && (
+        <div className="sticky bottom-4 flex items-center justify-center">
+          <div className="rounded-full border bg-background/95 backdrop-blur px-4 py-2 shadow-lg ring-1 ring-foreground/10">
+            <span className="text-sm font-medium">
+              {selectedCount} suggestion{selectedCount > 1 ? "s" : ""} selected
+            </span>
+            <span className="text-xs text-muted-foreground ml-2">
+              — go to Enhanced tab to generate
+            </span>
+          </div>
+        </div>
       )}
     </div>
   )
