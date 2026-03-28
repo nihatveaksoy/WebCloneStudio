@@ -143,6 +143,7 @@ export async function POST(
         status: "done",
         appliedSuggestionIds: body.suggestionIds as string[],
         previewUrl: result.html ? `/api/projects/${id}/preview` : undefined,
+        enhancedHtml: result.html ?? undefined,
       },
     })
 

@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
+import { HtmlActions } from "./HtmlActions"
 
 function LogViewer({ logs }: { logs: Project["clone"]["logs"] }) {
   const [expanded, setExpanded] = useState(false)
@@ -382,6 +383,19 @@ export function CloneTab({
           </div>
         </div>
       )}
+
+      {/* Source HTML Actions */}
+      <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-4 py-3">
+        <div>
+          <p className="text-sm font-medium">Source HTML</p>
+          <p className="text-xs text-muted-foreground">Original page HTML from {project.name}</p>
+        </div>
+        <HtmlActions
+          source={{ type: "url", url: project.url }}
+          filename={`${project.name}-source.html`}
+          label="HTML"
+        />
+      </div>
 
       {/* Extracted Data */}
       {clone.extractedData && (

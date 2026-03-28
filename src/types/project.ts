@@ -33,6 +33,7 @@ export interface EnhancedState {
   appliedSuggestionIds: string[]
   outputDir?: string
   previewUrl?: string
+  enhancedHtml?: string
   error?: string
 }
 

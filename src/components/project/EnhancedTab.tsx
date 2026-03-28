@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { MockModeBanner } from "./MockModeBanner"
+import { HtmlActions } from "./HtmlActions"
 
 export function EnhancedTab({
   project,
@@ -149,6 +150,23 @@ export function EnhancedTab({
             ))}
           </ul>
         </div>
+
+        {/* Enhanced HTML Actions */}
+        {project.enhanced.enhancedHtml && (
+          <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-4 py-3">
+            <div>
+              <p className="text-sm font-medium">Enhanced HTML</p>
+              <p className="text-xs text-muted-foreground">
+                AI-improved version of {project.name}
+              </p>
+            </div>
+            <HtmlActions
+              source={{ type: "html", html: project.enhanced.enhancedHtml }}
+              filename={`${project.name}-enhanced.html`}
+              label="HTML"
+            />
+          </div>
+        )}
 
         {/* Original Site */}
         <div className="rounded-lg border overflow-hidden">
