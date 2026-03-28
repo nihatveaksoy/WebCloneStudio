@@ -51,7 +51,8 @@ export function EnhancedTab({
         body: JSON.stringify({ suggestionIds: Array.from(selectedIds) }),
       })
       if (!res.ok) {
-        throw new Error("Failed to start enhancement")
+        const body = await res.json().catch(() => null)
+        throw new Error(body?.error ?? `Failed to start enhancement (${res.status})`)
       }
       toast.success("Enhancement started")
       onRefresh()
